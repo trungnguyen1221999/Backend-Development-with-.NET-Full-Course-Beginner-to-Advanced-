@@ -1,0 +1,89 @@
+@baseUrl = http://localhost:5014
+
+### GET / - Hello World
+GET {{baseUrl}}
+
+###
+
+### GET /blogs - Lấy tất cả blogs
+GET {{baseUrl}}/blogs
+
+###
+
+### GET /blogs/0 - Lấy blog theo id (hợp lệ)
+GET {{baseUrl}}/blogs/0
+
+###
+
+### GET /blogs/1 - Lấy blog thứ 2
+GET {{baseUrl}}/blogs/1
+
+###
+
+### GET /blogs/99 - Lấy blog không tồn tại (expect 404)
+GET {{baseUrl}}/blogs/99
+
+###
+
+### POST /blogs - Tạo blog mới
+POST {{baseUrl}}/blogs
+Content-Type: application/json
+
+{
+    "title": "New Blog",
+    "body": "This is the body of the new blog."
+}
+
+###
+
+### PUT /blogs/0 - Cập nhật toàn bộ blog (id=0)
+PUT {{baseUrl}}/blogs/0
+Content-Type: application/json
+
+{
+    "title": "Updated Blog Title",
+    "body": "This is the updated body of the blog."
+}
+
+###
+
+### PUT /blogs/99 - Cập nhật blog không tồn tại (expect 404)
+PUT {{baseUrl}}/blogs/99
+Content-Type: application/json
+
+{
+    "title": "Not Found",
+    "body": "This blog does not exist."
+}
+
+###
+
+### PATCH /blogs/0 - Cập nhật một phần blog (chỉ title)
+PATCH {{baseUrl}}/blogs/0
+Content-Type: application/json
+
+{
+    "title": "Patched Title Only",
+    "body": ""
+}
+
+###
+
+### PATCH /blogs/1 - Cập nhật một phần blog (chỉ body)
+PATCH {{baseUrl}}/blogs/1
+Content-Type: application/json
+
+{
+    "title": "",
+    "body": "Only the body is patched."
+}
+
+###
+
+### DELETE /blogs/0 - Xóa blog (id=0)
+DELETE {{baseUrl}}/blogs/0
+
+###
+
+### DELETE /blogs/99 - Xóa blog không tồn tại (expect 404)
+DELETE {{baseUrl}}/blogs/99

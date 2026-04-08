@@ -4,7 +4,69 @@ Full course on YouTube: [Watch here](https://www.youtube.com/watch?v=Aa5ARJRWaEs
 
 ---
 
-## Module 1: Course Overview & .NET Fundamentals
+## Key Concepts
+
+### Routing
+- Use `{id:int}` or `{id:guid}` instead of plain `{id}` string — framework validates automatically, wrong format returns 404 immediately
+- Guid is safer than int because it cannot be guessed
+- Most common route constraints: `:int`, `:guid`, `:min(1)`
+
+### HTTP Methods & Status Codes
+| Method | Use case | Status code |
+|--------|----------|-------------|
+| GET | Retrieve data | 200 OK |
+| POST | Create resource | 201 Created |
+| PUT | Replace entire resource | 200 OK + data |
+| PATCH | Partial update | 200 OK + data |
+| DELETE | Remove resource | 204 No Content |
+
+- PATCH uses `JsonPatchDocument<T>` — client only sends fields to change
+- PUT and PATCH should return updated data in response body
+
+### Middleware
+- Registration order = execution order — wrong order causes bugs
+- `await next.Invoke()` — waits for the entire downstream pipeline to finish before continuing
+- `before` runs top to bottom, `after` runs bottom to top (onion model)
+- Standard order: `UseAuthentication` → `UseAuthorization` → `MapControllers`
+
+### Controller vs Minimal API
+| | Minimal API | Controller |
+|---|---|---|
+| Use case | Small projects | Large projects, production |
+| Syntax | `app.MapGet(...)` | `[HttpGet]` attribute |
+
+- `[Route]` — required, without it endpoints return 404
+- `[ApiController]` — optional but recommended
+- `ActionResult<T>` — use for GET (returns data)
+- `IActionResult` — use for DELETE (returns status code only)
+
+### Unit Testing
+- Framework: **xUnit** + **WebApplicationFactory**
+- Pattern AAA: Arrange → Act → Assert
+- Naming: `Method_Scenario_ExpectedResult`
+- Test project sits alongside the app project, push to GitHub normally
+- CI/CD runs tests on every push — fail means blocked from merging
+
+### CI/CD
+- File `.github/workflows/test.yml` — GitHub Actions runs automatically on push
+- Flow: push → build → test → Pass ✅ / Fail ❌
+
+---
+
+## Projects
+
+| Project | Description |
+|---------|-------------|
+| `WebApplication` | Minimal API CRUD with in-memory Blog list |
+| `AdvanceRouter` | Route constraints: guid, int |
+| `ConfiguringMiddleware` | Custom middleware pipeline, HttpLogging |
+| `ProductCatalogApi` | Controller-based CRUD API with JsonPatch |
+
+---
+
+## Course Outline
+
+### Module 1: Course Overview & .NET Fundamentals
 
 | Time | Topic |
 |------|-------|
@@ -20,7 +82,7 @@ Full course on YouTube: [Watch here](https://www.youtube.com/watch?v=Aa5ARJRWaEs
 | 01:09:41 | Popular Libraries: Newtonsoft, Dapper, Serilog |
 | 01:16:24 | Lab: Serializing & Deserializing JSON |
 
-## Module 2: Building Web APIs with ASP.NET Core
+### Module 2: Building Web APIs with ASP.NET Core
 
 | Time | Topic |
 |------|-------|
@@ -39,7 +101,7 @@ Full course on YouTube: [Watch here](https://www.youtube.com/watch?v=Aa5ARJRWaEs
 | 03:47:07 | Logging Best Practices & Providers |
 | 03:52:42 | Lab: Error Handling & Serilog Integration |
 
-## Module 3: Serialization & Data Handling
+### Module 3: Serialization & Data Handling
 
 | Time | Topic |
 |------|-------|
@@ -53,7 +115,7 @@ Full course on YouTube: [Watch here](https://www.youtube.com/watch?v=Aa5ARJRWaEs
 | 05:16:06 | Security Risks & Best Practices |
 | 05:22:45 | Lab: Securing Serialization |
 
-## Module 4: Middleware & OpenAPI (Swagger)
+### Module 4: Middleware & OpenAPI (Swagger)
 
 | Time | Topic |
 |------|-------|
@@ -67,7 +129,7 @@ Full course on YouTube: [Watch here](https://www.youtube.com/watch?v=Aa5ARJRWaEs
 | 06:52:26 | Securing Middleware |
 | 06:56:18 | Lab: Security Implementation |
 
-## Module 5: AI-Assisted Development (Microsoft Copilot)
+### Module 5: AI-Assisted Development (Microsoft Copilot)
 
 | Time | Topic |
 |------|-------|

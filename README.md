@@ -51,6 +51,48 @@ Full course on YouTube: [Watch here](https://www.youtube.com/watch?v=Aa5ARJRWaEs
 - File `.github/workflows/test.yml` — GitHub Actions runs automatically on push
 - Flow: push → build → test → Pass ✅ / Fail ❌
 
+### Dependency Injection (DI)
+
+**The problem without DI:**
+- Controller creates its own dependencies (`new ProductService()`) — tight coupling
+- Hard to test — cannot swap real service with fake one
+- Hard to maintain — changing a service requires changing the controller
+
+**The solution:**
+```
+Interface  →  defines what methods are needed (contract)
+Service    →  implements the logic
+Controller →  receives service via constructor, calls it
+Program.cs →  registers the mapping: interface → class
+```
+
+**Order to write code:**
+1. Model — define data shape
+2. Interface — define what the service must do
+3. Service — implement the logic
+4. Controller — call the service, handle HTTP
+5. Program.cs — register the service
+
+**Key rules:**
+- Controller should use `IProductService` not `ProductService` — allows swapping with fake in tests
+- `private readonly` — only this class can use it, cannot be changed after constructor
+- Service returns `null` or data only — never HTTP status codes
+- Controller handles all HTTP decisions (200, 404, 201...)
+
+**Service lifetimes:**
+| | When to use |
+|---|---|
+| `AddSingleton` | Config, Cache — shared across entire app |
+| `AddScoped` | DbContext, Services — most common, one per request |
+| `AddTransient` | Small stateless utilities |
+
+**Register in Program.cs:**
+```csharp
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IUserService, UserService>();
+// one line per service
+```
+
 ---
 
 ## Projects
@@ -60,7 +102,7 @@ Full course on YouTube: [Watch here](https://www.youtube.com/watch?v=Aa5ARJRWaEs
 | `WebApplication` | Minimal API CRUD with in-memory Blog list |
 | `AdvanceRouter` | Route constraints: guid, int |
 | `ConfiguringMiddleware` | Custom middleware pipeline, HttpLogging |
-| `ProductCatalogApi` | Controller-based CRUD API with JsonPatch |
+| `ProductCatalogApi` | Controller-based CRUD API with DI, Service layer, JsonPatch |
 
 ---
 

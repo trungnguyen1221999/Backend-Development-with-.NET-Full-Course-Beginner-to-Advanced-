@@ -1,73 +1,55 @@
 namespace ProductCatalogApi.Controllers;
 
 using ProductCatalogApi.Models;
+using ProductCatalogApi.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.JsonPatch;
-
 
 [Route("api/products")]
 [ApiController]
 public class ProductController : ControllerBase
 {
-    private static List<Products> products = new List<Products>();
+    private readonly IProductService _service;
 
-    //Get All
+    public ProductController(IProductService service)
+    {
+        _service = service;
+    }
+
     [HttpGet]
-    public ActionResult<List<Products>> GetAll() => products;
+    public ActionResult<List<Products>> GetAll() => _service.GetAll();
 
-    //Get by Id
     [HttpGet("{id}")]
     public ActionResult<Products> GetById(string id)
     {
-        var product = products.FirstOrDefault(p => p.Id == id);
+        var product = _service.GetById(id);
         return product == null ? NotFound() : Ok(product);
     }
 
-    //Post
     [HttpPost]
     public ActionResult<Products> Create(Products product)
     {
-        product.Id = Guid.NewGuid().ToString();
-        products.Add(product);
-        return CreatedAtAction(nameof(GetById), new { id = product.Id }, product);
+        var created = _service.Create(product);
+        return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
     }
 
-    //Put
     [HttpPut("{id}")]
     public ActionResult<Products> Update(string id, Products updatedProduct)
     {
-        var product = products.FirstOrDefault(p => p.Id == id);
-        if (product == null) return NotFound();
-
-        product.Name = updatedProduct.Name;
-        product.Description = updatedProduct.Description;
-        product.Price = updatedProduct.Price;
-
-        return Ok(product);
+        var product = _service.Update(id, updatedProduct);
+        return product == null ? NotFound() : Ok(product);
     }
 
-    //Patch
     [HttpPatch("{id}")]
     public ActionResult<Products> PartialUpdate(string id, JsonPatchDocument<Products> patchDoc)
     {
-        var product = products.FirstOrDefault(p => p.Id == id);
-        if (product == null) return NotFound();
-
-        patchDoc.ApplyTo(product);
-        return Ok(product);
+        var product = _service.PartialUpdate(id, patchDoc);
+        return product == null ? NotFound() : Ok(product);
     }
 
-    //Delete    
     [HttpDelete("{id}")]
     public IActionResult Delete(string id)
     {
-        var product = products.FirstOrDefault(p => p.Id == id);
-        if (product == null)
-        {
-            return NotFound();
-        }
-
-        products.Remove(product);
-        return NoContent();
+        return _service.Delete(id) ? NoContent() : NotFound();
     }
 }

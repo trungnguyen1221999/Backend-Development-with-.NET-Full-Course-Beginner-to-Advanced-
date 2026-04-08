@@ -1,0 +1,7 @@
+@baseURL = http://localhost:5175
+
+POST {{baseURL}}/users/3fa85f64-5717-4562-b3fc-2c963f66afa6/posts/hello-world
+
+####
+
+GET {{baseURL}}/products/3fa85f64-5717-4562-b3fc-2c963f66afa6
